@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ site.title }} - ScanHeritage{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header with main image -->
+    <div class="mb-8">
+        {% if site.main_image %}
+            <div class="w-full h-64 md:h-96 rounded-lg overflow-hidden mb-6">
+                <img src="{{ site.main_image.url }}" alt="{{ site.title }}" class="w-full h-full object-cover">
+            </div>
+        {% endif %}
+        
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <div class="flex items-center mb-2">
+                    <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full mr-3">
+                        {{ site.get_site_type_display }}
+                    </span>
+                    {% if site.featured %}
+                        <span class="bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1 rounded-full">
+                            Featured
+                        </span>
+                    {% endif %}
+                </div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ site.title }}</h1>
+                <div class="flex items-center text-gray-600 mb-4">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    <span>{{ site.address }}, {{ site.city }}, {{ site.state }}, {{ site.country }}</span>
+                </div>
+                {% if site.established_year %}
+                    <div class="flex items-center text-gray-600 mb-4">
+                        <i class="fas fa-calendar mr-2"></i>
+                        <span>Established: {{ site.established_year }}</span>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- QR Code -->
+            {% if site.qr_code %}
+                <div class="ml-6 text-center">
+                    <div class="bg-white p-4 rounded-lg shadow-lg border">
+                        <img src="{{ site.qr_code.url }}" alt="QR Code for {{ site.title }}" class="w-32 h-32 mx-auto mb-2">
+                        <p class="text-xs text-gray-600">Scan to share</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+            <!-- Description -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">About This Heritage Site</h2>
+                <div class="prose prose-lg text-gray-700">
+                    {{ site.description|linebreaks }}
+                </div>
+            </div>
+
+            <!-- Historical Significance -->
+            {% if site.historical_significance %}
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Historical Significance</h2>
+                    <div class="prose prose-lg text-gray-700">
+                        {{ site.historical_significance|linebreaks }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Facts -->
+            {% if facts %}
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Interesting Facts</h2>
+                    <div class="space-y-4">
+                        {% for fact in facts %}
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <h3 class="font-semibold text-gray-900">{{ fact.title }}</h3>
+                                <p class="text-gray-700">{{ fact.description }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Gallery -->
+            {% if images %}
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Gallery</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for image in images %}
+                            <div class="rounded-lg overflow-hidden">
+                                <img src="{{ image.image.url }}" alt="{{ image.caption }}" class="w-full h-48 object-cover">
+                                {% if image.caption %}
+                                    <div class="p-3 bg-gray-50">
+                                        <p class="text-sm text-gray-600">{{ image.caption }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+            <!-- Site Information -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Site Information</h3>
+                <div class="space-y-3">
+                    {% if site.historical_period %}
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-gray-400 mr-3"></i>
+                            <div>
+                                <span class="text-sm text-gray-600">Period:</span>
+                                <p class="font-medium">{{ site.historical_period }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if site.architect %}
+                        <div class="flex items-center">
+                            <i class="fas fa-user text-gray-400 mr-3"></i>
+                            <div>
+                                <span class="text-sm text-gray-600">Architect:</span>
+                                <p class="font-medium">{{ site.architect }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if site.category %}
+                        <div class="flex items-center">
+                            <i class="fas fa-tag text-gray-400 mr-3"></i>
+                            <div>
+                                <span class="text-sm text-gray-600">Category:</span>
+                                <p class="font-medium">{{ site.category.name }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            {% if site.website or site.phone or site.email or site.hours_info %}
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Contact & Hours</h3>
+                    <div class="space-y-3">
+                        {% if site.website %}
+                            <div class="flex items-center">
+                                <i class="fas fa-globe text-gray-400 mr-3"></i>
+                                <a href="{{ site.website }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                    Visit Website
+                                </a>
+                            </div>
+                        {% endif %}
+                        
+                        {% if site.phone %}
+                            <div class="flex items-center">
+                                <i class="fas fa-phone text-gray-400 mr-3"></i>
+                                <a href="tel:{{ site.phone }}" class="text-blue-600 hover:text-blue-800">
+                                    {{ site.phone }}
+                                </a>
+                            </div>
+                        {% endif %}
+                        
+                        {% if site.email %}
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope text-gray-400 mr-3"></i>
+                                <a href="mailto:{{ site.email }}" class="text-blue-600 hover:text-blue-800">
+                                    {{ site.email }}
+                                </a>
+                            </div>
+                        {% endif %}
+                        
+                        {% if site.hours_info %}
+                            <div class="flex items-start">
+                                <i class="fas fa-clock text-gray-400 mr-3 mt-1"></i>
+                                <div>
+                                    <span class="text-sm text-gray-600">Hours:</span>
+                                    <p class="font-medium">{{ site.hours_info|linebreaks }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Order QR Sign CTA -->
+            {% if user.is_authenticated and user == site.owner %}
+                <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2">Order QR Signs</h3>
+                    <p class="text-blue-700 text-sm mb-4">
+                        Get professional QR code signs for this heritage site to help visitors access your content.
+                    </p>
+                    <a href="{% url 'orders:order_qr_sign' site.slug %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center text-sm font-medium transition-colors w-full justify-center">
+                        <i class="fas fa-qrcode mr-2"></i>
+                        Order QR Signs
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

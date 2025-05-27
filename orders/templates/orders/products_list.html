@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}QR Signs - ScanHeritage{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">QR Code Signs</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Professional QR code signs to connect your heritage sites with digital content. 
+            Choose from various materials and sizes to match your location.
+        </p>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for product in products %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+                {% else %}
+                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-qrcode text-gray-400 text-4xl"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                            {{ product.get_material_display }}
+                        </span>
+                        <span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                            {{ product.get_size_display }}
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ product.name }}</h3>
+                    <p class="text-gray-600 mb-4">{{ product.description }}</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-blue-600">${{ product.price }}</span>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-500">Starting at</p>
+                            <p class="text-xs text-gray-400">Custom pricing available</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <p class="text-sm text-gray-600 mb-3">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Choose a heritage site to order
+                        </p>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'heritage:dashboard' %}" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg inline-flex items-center justify-center font-medium transition-colors">
+                                <i class="fas fa-shopping-cart mr-2"></i>
+                                Order This Sign
+                            </a>
+                        {% else %}
+                            <a href="{% url 'account_login' %}" class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg inline-flex items-center justify-center font-medium transition-colors">
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                Login to Order
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Features Section -->
+    <div class="mt-16 bg-gray-100 rounded-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">Why Choose Our QR Signs?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Weather Resistant</h3>
+                <p class="text-gray-600 text-sm">Built to withstand outdoor conditions with UV-resistant materials</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-tools text-green-600 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Easy Installation</h3>
+                <p class="text-gray-600 text-sm">Comes with mounting hardware and installation instructions</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-palette text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Custom Design</h3>
+                <p class="text-gray-600 text-sm">Personalized with your heritage site information and branding</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

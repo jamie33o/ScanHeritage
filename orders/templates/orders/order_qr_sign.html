@@ -1,0 +1,212 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Order QR Sign for {{ site.title }} - ScanHeritage{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+            <a href="{% url 'heritage:dashboard' %}" class="hover:text-gray-700">Dashboard</a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="{% url 'heritage:site_edit' site.slug %}" class="hover:text-gray-700">{{ site.title }}</a>
+            <i class="fas fa-chevron-right"></i>
+            <span class="text-gray-900">Order QR Sign</span>
+        </nav>
+        
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <i class="fas fa-qrcode mr-3 text-blue-600"></i>
+            Order QR Sign
+        </h1>
+        <p class="text-gray-600 mt-2">Choose a QR sign for: <strong>{{ site.title }}</strong></p>
+    </div>
+
+    <!-- Site Preview -->
+    <div class="bg-blue-50 rounded-lg p-6 mb-8 border border-blue-200">
+        <div class="flex items-start space-x-4">
+            {% if site.main_image %}
+                <img src="{{ site.main_image.url }}" alt="{{ site.title }}" class="w-20 h-20 rounded-lg object-cover">
+            {% else %}
+                <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-image text-gray-400"></i>
+                </div>
+            {% endif %}
+            <div class="flex-1">
+                <h3 class="text-lg font-semibold text-blue-900">{{ site.title }}</h3>
+                <p class="text-blue-700 text-sm">{{ site.short_description|truncatewords:20 }}</p>
+                <p class="text-blue-600 text-sm mt-1">
+                    <i class="fas fa-map-marker-alt mr-1"></i>
+                    {{ site.city }}, {{ site.state }}
+                </p>
+            </div>
+            {% if site.qr_code %}
+                <div class="text-center">
+                    <img src="{{ site.qr_code.url }}" alt="QR Code" class="w-16 h-16 border border-blue-200 rounded">
+                    <p class="text-xs text-blue-600 mt-1">Current QR</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Product Selection Form -->
+    <form method="post" class="bg-white rounded-lg shadow-lg p-6">
+        {% csrf_token %}
+        
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Choose Your QR Sign</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {% for product in products %}
+                <div class="border border-gray-200 rounded-lg overflow-hidden hover:border-blue-500 transition-colors cursor-pointer product-option">
+                    <input type="radio" name="product_id" value="{{ product.id }}" id="product_{{ product.id }}" class="sr-only" required>
+                    <label for="product_{{ product.id }}" class="block cursor-pointer">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-32 object-cover">
+                        {% else %}
+                            <div class="w-full h-32 bg-gray-200 flex items-center justify-center">
+                                <i class="fas fa-qrcode text-gray-400 text-2xl"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                                    {{ product.get_material_display }}
+                                </span>
+                                <span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2 py-1 rounded">
+                                    {{ product.get_size_display }}
+                                </span>
+                            </div>
+                            
+                            <h3 class="font-semibold text-gray-900 mb-1">{{ product.name }}</h3>
+                            <p class="text-gray-600 text-sm mb-3">{{ product.description|truncatewords:10 }}</p>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-lg font-bold text-blue-600">${{ product.price }}</span>
+                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full flex items-center justify-center product-radio">
+                                    <div class="w-2 h-2 bg-blue-600 rounded-full hidden"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Quantity and Custom Text -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                <select name="quantity" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <option value="1">1 Sign</option>
+                    <option value="2">2 Signs</option>
+                    <option value="3">3 Signs</option>
+                    <option value="5">5 Signs</option>
+                    <option value="10">10 Signs</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Custom Text (Optional)
+            </label>
+            <textarea 
+                name="custom_text" 
+                rows="3" 
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Add any custom text you'd like on your sign (e.g., 'Scan for more information', contact details, etc.)"
+            ></textarea>
+            <p class="text-sm text-gray-500 mt-1">This text will appear below the QR code on your sign.</p>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <h3 class="font-semibold text-gray-900 mb-2">Order Summary</h3>
+            <div id="order-summary" class="text-sm text-gray-600">
+                <p>Select a product to see pricing details</p>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end space-x-4">
+            <a href="{% url 'heritage:site_edit' site.slug %}" class="border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 rounded-lg font-medium transition-colors">
+                Cancel
+            </a>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                <i class="fas fa-shopping-cart mr-2"></i>
+                Continue to Checkout
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const productOptions = document.querySelectorAll('.product-option');
+    const quantitySelect = document.querySelector('select[name="quantity"]');
+    const orderSummary = document.getElementById('order-summary');
+    
+    // Product data
+    const products = {
+        {% for product in products %}
+        '{{ product.id }}': {
+            name: '{{ product.name }}',
+            price: {{ product.price }},
+            material: '{{ product.get_material_display }}',
+            size: '{{ product.get_size_display }}'
+        },
+        {% endfor %}
+    };
+    
+    function updateOrderSummary() {
+        const selectedProduct = document.querySelector('input[name="product_id"]:checked');
+        const quantity = parseInt(quantitySelect.value);
+        
+        if (selectedProduct) {
+            const product = products[selectedProduct.value];
+            const total = product.price * quantity;
+            
+            orderSummary.innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span>${product.name} (${product.material}, ${product.size})</span>
+                        <span>${product.price.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Quantity</span>
+                        <span>${quantity}</span>
+                    </div>
+                    <div class="flex justify-between font-semibold text-gray-900 pt-1 border-t">
+                        <span>Total</span>
+                        <span>${total.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Handle product selection
+    productOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selection from all options
+            productOptions.forEach(opt => {
+                opt.classList.remove('border-blue-500', 'bg-blue-50');
+                const radio = opt.querySelector('.product-radio div');
+                radio.classList.add('hidden');
+            });
+            
+            // Add selection to clicked option
+            this.classList.add('border-blue-500', 'bg-blue-50');
+            const radio = this.querySelector('.product-radio div');
+            radio.classList.remove('hidden');
+            
+            updateOrderSummary();
+        });
+    });
+    
+    // Handle quantity change
+    quantitySelect.addEventListener('change', updateOrderSummary);
+});
+</script>
+{% endblock %}

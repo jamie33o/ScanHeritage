@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-gradient text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h1 class="text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                    Preserve Your Local Heritage
+                </h1>
+                <p class="text-xl mb-8 opacity-90">
+                    Create beautiful digital stories for historic sites, towns, and landmarks. 
+                    Order custom QR signs to connect the physical world with your heritage content.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'heritage:create_site' %}" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create Heritage Site
+                    </a>
+                    <a href="{% url 'heritage:site_list' %}" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-compass mr-2"></i>
+                        Explore Sites
+                    </a>
+                </div>
+            </div>
+            <div class="text-center">
+                <div class="inline-block bg-white bg-opacity-10 rounded-full p-16">
+                    <i class="fas fa-qrcode text-8xl opacity-80"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p class="text-xl text-gray-600">Three simple steps to share your heritage</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center card-hover">
+                <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-edit text-blue-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Create Your Story</h3>
+                <p class="text-gray-600">Build beautiful heritage pages with photos, history, and detailed information about your site.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center card-hover">
+                <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-qrcode text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Get QR Signs</h3>
+                <p class="text-gray-600">Order professional QR code signs in various materials and sizes for your heritage site.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center card-hover">
+                <div class="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-mobile-alt text-purple-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Share & Connect</h3>
+                <p class="text-gray-600">Visitors scan QR codes to instantly access your heritage content on their mobile devices.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Sites -->
+{% if featured_sites %}
+<section class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Featured Heritage Sites</h2>
+            <p class="text-xl text-gray-600">Discover amazing stories from our community</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for site in featured_sites %}
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+                {% if site.main_image %}
+                    <img src="{{ site.main_image.url }}" alt="{{ site.title }}" class="w-full h-48 object-cover">
+                {% else %}
+                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-image text-gray-400 text-3xl"></i>
+                    </div>
+                {% endif %}
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                            {{ site.get_site_type_display }}
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ site.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ site.short_description|truncatewords:20 }}</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <i class="fas fa-map-marker-alt mr-1"></i>
+                        {{ site.city }}, {{ site.state }}
+                    </div>
+                    <a href="{{ site.get_absolute_url }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+                        <i class="fas fa-eye mr-1"></i>
+                        View Site
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'heritage:site_list' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center">
+                <i class="fas fa-compass mr-2"></i>
+                Explore All Sites
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl font-bold text-gray-900 mb-6">Ready to Preserve Your Heritage?</h2>
+        <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Join our community of heritage preservationists and start sharing your local history today.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'account_signup' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center justify-center">
+                <i class="fas fa-user-plus mr-2"></i>
+                Get Started Free
+            </a>
+            <a href="{% url 'orders:product_list' %}" class="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center justify-center transition-colors">
+                <i class="fas fa-shopping-cart mr-2"></i>
+                View QR Signs
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Heritage Site - ScanHeritage{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+            <i class="fas fa-plus mr-3 text-blue-600"></i>
+            Create Heritage Site
+        </h1>
+        <p class="text-gray-600 mt-2">Add a new heritage site to preserve and share local history</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Basic Information -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        {{ form.title }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Site Type</label>
+                        {{ form.site_type }}
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Short Description</label>
+                        {{ form.short_description }}
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Description</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Main Image</label>
+                        {{ form.main_image }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Information -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Location</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        {{ form.address }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                        {{ form.city }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                        {{ form.state }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                        {{ form.country }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical Information -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Historical Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Established Year</label>
+                        {{ form.established_year }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Historical Period</label>
+                        {{ form.historical_period }}
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Architect</label>
+                        {{ form.architect }}
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Historical Significance</label>
+                        {{ form.historical_significance }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Contact & Hours</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Website</label>
+                        {{ form.website }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        {{ form.phone }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Hours Information</label>
+                        {{ form.hours_info }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publishing Options -->
+            <div>
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Publishing</h2>
+                <div class="flex items-center">
+                    {{ form.is_published }}
+                    <label class="ml-2 text-sm text-gray-700">Publish this site immediately</label>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">You can always change this later in the edit section.</p>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="flex justify-end space-x-4 pt-6">
+                <a href="{% url 'heritage:dashboard' %}" class="border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 rounded-lg font-medium transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-save mr-2"></i>
+                    Create Site
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
